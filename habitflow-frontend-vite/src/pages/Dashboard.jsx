@@ -18,8 +18,10 @@ export default function Dashboard() {
     try {
       const url = `/habits?tag=${tag}&page=${pageNum}&limit=${limit}`;
       const { data } = await axiosInstance.get(url);
-      setHabits(data);
-
+  
+      // ✅ Fix: ensure we’re setting an array
+      setHabits(data.habits || []);  
+  
       const total = Number(data.totalCount || 0);
       setTotalPages(Math.ceil(total / limit));
     } catch (err) {
@@ -28,6 +30,7 @@ export default function Dashboard() {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchHabits(tagFilter, page);

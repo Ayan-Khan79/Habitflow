@@ -12,32 +12,32 @@ model User {
   name      String
   email     String   @unique
   password  String
-  habits    Habit[]  @relation("UserHabits")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  habits    Habit[]  @relation("UserHabits")
 }
 
 model Habit {
   id             Int           @id @default(autoincrement())
   userId         Int
-  user           User          @relation("UserHabits", fields: [userId], references: [id])
   title          String
   description    String
   frequency      Frequency
   tags           String[]      @default([])
-  completedCount Int           @default(0)
-  longestStreak  Int           @default(0)
-  trackingLogs   TrackingLog[]
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
+  completedCount Int           @default(0)
+  longestStreak  Int           @default(0)
+  user           User          @relation("UserHabits", fields: [userId], references: [id])
+  trackingLogs   TrackingLog[]
 }
 
 model TrackingLog {
   id        Int      @id @default(autoincrement())
-  habit     Habit    @relation(fields: [habitId], references: [id])
   habitId   Int
   date      DateTime
   createdAt DateTime @default(now())
+  habit     Habit    @relation(fields: [habitId], references: [id])
 
   @@unique([habitId, date])
 }

@@ -18,10 +18,9 @@ export default function Dashboard() {
     try {
       const url = `/habits?tag=${tag}&page=${pageNum}&limit=${limit}`;
       const { data } = await axiosInstance.get(url);
-  
-      // ✅ Fix: ensure we’re setting an array
-      setHabits(data.habits || []);  
-  
+
+      // Backend returns { habits, totalCount }
+      setHabits(data.habits || []);
       const total = Number(data.totalCount || 0);
       setTotalPages(Math.ceil(total / limit));
     } catch (err) {
@@ -30,7 +29,6 @@ export default function Dashboard() {
       setLoading(false);
     }
   };
-  
 
   useEffect(() => {
     fetchHabits(tagFilter, page);
@@ -48,7 +46,10 @@ export default function Dashboard() {
             type="text"
             placeholder="Filter by tag..."
             value={tagFilter}
-            onChange={(e) => { setTagFilter(e.target.value); setPage(1); }}
+            onChange={(e) => {
+              setTagFilter(e.target.value);
+              setPage(1); // reset to first page on filter change
+            }}
             className="flex-1 p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
           />
           {tagFilter && (
@@ -93,7 +94,9 @@ export default function Dashboard() {
             >
               Prev
             </button>
-            <span className="font-medium">Page {page} of {totalPages}</span>
+            <span className="font-medium">
+              Page {page} of {totalPages}
+            </span>
             <button
               onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
               disabled={page === totalPages}

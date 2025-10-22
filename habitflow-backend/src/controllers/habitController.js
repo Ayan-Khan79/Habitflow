@@ -67,23 +67,30 @@ const createHabit = async (req, res) => {
 
 const getHabits = async (req, res) => {
   try {
-    const { tag, page = 1, limit = 20 } = req.query;
+    const { tag, page = 1, limit = 6 } = req.query;
     const where = { userId: req.user.id };
     if (tag) where.tags = { has: tag };
 
-    const habits = await prisma.habit.findMany({
-      where,
-      skip: (page - 1) * limit,
-      take: Number(limit),
-      orderBy: { createdAt: 'desc' }
-    });
+    const skip = (Number(page) - 1) * Number(limit);
+    const take = Number(limit);
 
-    res.json(habits);
+    const [habits, totalCount] = await Promise.all([
+      prisma.habit.findMany({
+        where,
+        skip,
+        take,
+        orderBy: { createdAt: 'desc' },
+      }),
+      prisma.habit.count({ where }),
+    ]);
+
+    res.json({ habits, totalCount }); // <-- send object instead of array
   } catch (err) {
     console.error(err);
     res.status(500).json({ message: 'Server error' });
   }
 };
+
 
 const getHabit = async (req, res) => {
   try {

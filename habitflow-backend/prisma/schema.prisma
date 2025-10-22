@@ -12,7 +12,7 @@ model User {
   name      String
   email     String   @unique
   password  String
-  habits    Habit[]  @relation("UserHabits") // relation name added
+  habits    Habit[]  @relation("UserHabits")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -20,14 +20,13 @@ model User {
 model Habit {
   id             Int           @id @default(autoincrement())
   userId         Int
-  user           User          @relation("UserHabits", fields: [userId], references: [id]) // relation to User
+  user           User          @relation("UserHabits", fields: [userId], references: [id])
   title          String
   description    String
-  frequency      String
+  frequency      Frequency
   tags           String[]      @default([])
   completedCount Int           @default(0)
   longestStreak  Int           @default(0)
-  reminderTime   DateTime?
   trackingLogs   TrackingLog[]
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt

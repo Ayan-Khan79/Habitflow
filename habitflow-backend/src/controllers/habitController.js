@@ -39,17 +39,25 @@ async function calculateCurrentStreak(habitId) {
 const createHabit = async (req, res) => {
   try {
     const { title, description, frequency, tags } = req.body;
-    if (!title || !frequency) return res.status(400).json({ message: 'Missing fields' });
+
+    if (!title || !frequency) 
+      return res.status(400).json({ message: 'Missing fields' });
+
+    // Ensure frequency matches enum
+    if (!['daily', 'weekly'].includes(frequency)) {
+      return res.status(400).json({ message: 'Invalid frequency' });
+    }
 
     const habit = await prisma.habit.create({
       data: {
         userId: req.user.id,
         title,
         description: description || '',
-        frequency,
+        frequency, // now enum-safe
         tags: tags || []
       }
     });
+
     res.status(201).json(habit);
   } catch (err) {
     console.error(err);
@@ -98,13 +106,26 @@ const updateHabit = async (req, res) => {
   try {
     const id = Number(req.params.id);
     const existing = await prisma.habit.findUnique({ where: { id } });
-    if (!existing || existing.userId !== req.user.id) return res.status(404).json({ message: 'Not found' });
+    if (!existing || existing.userId !== req.user.id) 
+      return res.status(404).json({ message: 'Not found' });
 
     const { title, description, frequency, tags } = req.body;
+
+    // Validate frequency
+    if (frequency && !['daily', 'weekly'].includes(frequency)) {
+      return res.status(400).json({ message: 'Invalid frequency' });
+    }
+
     const updated = await prisma.habit.update({
       where: { id },
-      data: { title, description, frequency, tags }
+      data: {
+        title,
+        description,
+        frequency,
+        tags
+      }
     });
+
     res.json(updated);
   } catch (err) {
     console.error(err);

@@ -1,0 +1,12 @@
+# Node
+node_modules/
+.env
+dist/
+
+# Vite / React
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+
+# Logs
+*.log

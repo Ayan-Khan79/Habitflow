@@ -43,6 +43,7 @@ model TrackingLog {
   @@unique([habitId, date])
 }
 
+
 enum Frequency {
   daily
   weekly

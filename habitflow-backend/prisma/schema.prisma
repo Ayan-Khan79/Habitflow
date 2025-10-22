@@ -22,7 +22,7 @@ model Habit {
   userId         Int
   title          String
   description    String
-  frequency      Frequency
+  frequency      String
   tags           String[]      @default([])
   createdAt      DateTime      @default(now())
   updatedAt      DateTime      @updatedAt
@@ -43,8 +43,3 @@ model TrackingLog {
   @@unique([habitId, date])
 }
 
-
-enum Frequency {
-  daily
-  weekly
-}

@@ -30,6 +30,7 @@ model Habit {
   longestStreak  Int           @default(0)
   user           User          @relation("UserHabits", fields: [userId], references: [id])
   trackingLogs   TrackingLog[]
+  reminderTime   DateTime? 
 }
 
 model TrackingLog {

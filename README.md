@@ -3,8 +3,8 @@
 A full-stack Habit Tracking Application built with React, Shadcn UI, Node.js, Express, PostgreSQL, and JWT Authentication.
 This app helps users build better habits, track progress, and maintain streaks — all through a clean and modern UI.
 
-## ✨ Features
-# 👤 Authentication
+# ✨ Features
+## 👤 Authentication
 
 Secure user registration and login using JWT
 
@@ -12,7 +12,7 @@ Passwords hashed with bcrypt
 
 Protected routes for authenticated users only
 
-# 📅 Habit Management
+## 📅 Habit Management
 
 Create, update, and delete personal habits
 
@@ -20,13 +20,13 @@ Track daily progress and completion
 
 View detailed habit information and statistics
 
-# 📊 Streaks & Progress
+## 📊 Streaks & Progress
 
 Track habit streaks automatically
 
 Visual indicators for completed and pending days
 
-# 🎨 Modern UI
+## 🎨 Modern UI
 
 Built using Shadcn UI + TailwindCSS
 
@@ -34,6 +34,19 @@ Responsive, minimal, and visually appealing design
 
 Dynamic components and smooth transitions
 
+## 🖼️ Screenshots
+
+### 🔐 Login Page
+![Login Page](./Screenshot/LogIn.png)
+
+### 🔐 Register
+![Register](./Screenshot/Register.png)
+
+### 📊 Dashboard
+![Dashboard](./Screenshot/dashboard.png)
+
+### 🧩 Habit Details
+![Habit Detail](./Screenshot/habit.png)
 
 
 ## 🏗️ Tech Stack

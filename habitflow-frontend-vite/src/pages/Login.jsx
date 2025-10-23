@@ -21,6 +21,14 @@ export default function Login() {
     }
   };
 
+  // ✅ Demo credentials (for interviewer)
+  const demoEmail = "demo@habitflow.com";
+  const demoPassword = "Demo@123";
+
+  const fillDemoCredentials = () => {
+    setForm({ email: demoEmail, password: demoPassword });
+  };
+
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-indigo-100 to-indigo-300">
       {/* Left Image / Illustration */}
@@ -72,6 +80,26 @@ export default function Login() {
           >
             {loading ? "Logging in..." : "Login"}
           </button>
+
+          {/* ✅ Demo credentials section */}
+          <div className="mt-4 p-4 bg-indigo-50 rounded-xl border border-indigo-200 text-sm text-gray-700">
+            <p className="font-semibold text-indigo-700 text-center mb-2">
+              Demo Login Credentials
+            </p>
+            <p>
+              <strong>Email:</strong> {demoEmail}
+            </p>
+            <p>
+              <strong>Password:</strong> {demoPassword}
+            </p>
+            <button
+              type="button"
+              onClick={fillDemoCredentials}
+              className="mt-3 w-full py-2 text-sm rounded-lg border border-indigo-600 text-indigo-600 hover:bg-indigo-100 transition"
+            >
+              Autofill Demo Credentials
+            </button>
+          </div>
 
           <p className="text-center text-gray-500 mt-2">
             Don’t have an account?{" "}

@@ -51,7 +51,7 @@ const createHabit = async (req, res) => {
         userId: req.user.id,
         title,
         description: description || '',
-        frequency,
+        frequency: String(frequency),
         tags: tags || [],
         reminderTime: reminderTime ? new Date(reminderTime) : null,
       },

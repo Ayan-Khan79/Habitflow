@@ -74,31 +74,38 @@ PORT=5000
     npx prisma migrate dev --name init
 ## Start the backend:
     npm run dev
-# 3️⃣ Setup the Frontend
+## 3️⃣ Setup the Frontend
     cd ../client
     npm install
     npm run dev
 # 🔐 API Endpoints
-Method	Endpoint	Description	Auth Required <br>
-POST	/api/auth/register	Register new user	❌ <br> 
-POST	/api/auth/login	Login user & get JWT	❌ <br>
-GET	/api/habits	Get all habits for logged-in user	✅ <br>
-POST	/api/habits	Create a new habit	✅ <br>
-GET	/api/habits/:id	Get specific habit details	✅ <br>
-PUT	/api/habits/:id	Update habit details	✅ <br>
-DELETE	/api/habits/:id	Delete a habit	✅ <br>
+Method	Endpoint	Description     	Auth Required <br>
+
+POST	/api/auth/register	Register new user	<br> 
+
+POST	/api/auth/login	Login user & get JWT	 <br>
+
+GET	/api/habits	Get all habits for logged-in user	<br>
+
+POST	/api/habits	Create a new habit	 <br>
+
+GET	/api/habits/:id	Get specific habit details	 <br>
+
+PUT	/api/habits/:id	Update habit details	<br>
+
+DELETE	/api/habits/:id	Delete a habit	 <br>
 
 ## 🧠 Future Enhancements
 
-📈 Analytics Dashboard (weekly/monthly progress) <br>
+-- 📈 Analytics Dashboard (weekly/monthly progress) <br>
 
-🔔 Daily Reminders / Notifications <br>
+-- 🔔 Daily Reminders / Notifications <br>
 
-🌙 Dark Mode <br>
+-- 🌙 Dark Mode <br>
 
-🪄 Social login (Google, GitHub) <br>
+-- 🪄 Social login (Google, GitHub) <br>
 
-🎯 Gamification (badges, XP, streak achievements) <br>
+-- 🎯 Gamification (badges, XP, streak achievements) <br>
 
 ## 🧑‍💻 Author
 

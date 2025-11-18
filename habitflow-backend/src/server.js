@@ -10,8 +10,7 @@ app.use(express.json());
 const allowedOrigins = [
   "http://localhost:5173",                        // local dev
   "https://habitflow-ljko.onrender.com",          // backend's frontend link
-  "https://habitflow-1-4x1z.onrender.com" ,       // deployed frontend
-  "https://habitflow-1-challenge-branch.onrender.com" 
+  "https://habitflow-1-4x1z.onrender.com"       // deployed frontend
 ];
 
 app.use(

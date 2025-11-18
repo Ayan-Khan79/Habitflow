@@ -4,7 +4,7 @@ const dayjs = require('dayjs');
 
 const getAllChallenges = async (req, res) => {
     try {
-      const challenges = await prisma.challenge.findMany({
+      const challenges = await prisma.Challenge.findMany({
         include: { milestones: true },
       });
   
@@ -18,7 +18,7 @@ const getAllChallenges = async (req, res) => {
 const getChallengeById = async (req, res) => {
   try {
     const id = Number(req.params.id);
-    const challenge = await prisma.challenge.findUnique({
+    const challenge = await prisma.Challenge.findUnique({
       where: { id },
       include: { milestones: true },
     });
@@ -36,7 +36,7 @@ const startChallenge = async (req, res) => {
     const userId = req.user.id;
     const challengeId = Number(req.params.id);
 
-    const challenge = await prisma.challenge.findUnique({ where: { id: challengeId }});
+    const challenge = await prisma.Challenge.findUnique({ where: { id: challengeId }});
     if (!challenge) return res.status(404).json({ message: 'Challenge not found' });
 
     // prevent multiple active joins for same challenge
@@ -48,7 +48,7 @@ const startChallenge = async (req, res) => {
     const startDate = dayjs().startOf('day').toDate();
     const endDate = dayjs(startDate).add(challenge.durationDays - 1, 'day').endOf('day').toDate();
 
-    const userChallenge = await prisma.userChallenge.create({
+    const userChallenge = await prisma.UserChallenge.create({
       data: {
         userId,
         challengeId,
@@ -69,7 +69,7 @@ const startChallenge = async (req, res) => {
 const getUserChallenges = async (req, res) => {
   try {
     const userId = req.user.id;
-    const userChallenges = await prisma.userChallenge.findMany({
+    const userChallenges = await prisma.UserChallenge.findMany({
       where: { userId },
       include: {
         challenge: { include: { milestones: true } },
@@ -88,7 +88,7 @@ const getUserChallenges = async (req, res) => {
 const completeToday = async (req, res) => {
   try {
     const userChallengeId = Number(req.params.id);
-    const uc = await prisma.userChallenge.findUnique({
+    const uc = await prisma.UserChallenge.findUnique({
       where: { id: userChallengeId },
       include: { challenge: { include: { milestones: true } } }
     });
@@ -97,16 +97,16 @@ const completeToday = async (req, res) => {
     const today = dayjs().startOf('day').toDate();
 
     // prevent duplicate
-    const exists = await prisma.challengeProgress.findUnique({
+    const exists = await prisma.ChallengeProgress.findUnique({
       where: { userChallengeId_date: { userChallengeId, date: today } }
     });
     if (exists) return res.status(400).json({ message: 'Already completed for today' });
 
-    await prisma.challengeProgress.create({
+    await prisma.ChallengeProgress.create({
       data: { userChallengeId, date: today, isCompleted: true }
     });
 
-    const updated = await prisma.userChallenge.update({
+    const updated = await prisma.UserChallenge.update({
       where: { id: userChallengeId },
       data: { completedDays: { increment: 1 } },
       include: { challenge: { include: { milestones: true } } }
@@ -118,7 +118,7 @@ const completeToday = async (req, res) => {
     // If completedDays reaches duration -> mark as completed
     let statusUpdate = null;
     if (updated.completedDays >= updated.challenge.durationDays) {
-      await prisma.userChallenge.update({
+      await prisma.UserChallenge.update({
         where: { id: userChallengeId },
         data: { status: 'COMPLETED' }
       });
@@ -139,7 +139,7 @@ const createChallenge = async (req, res) => {
         return res.status(400).json({ message: "Missing required fields" });
       }
   
-      const challenge = await prisma.challenge.create({
+      const challenge = await prisma.Challenge.create({
         data: { title, description, icon, durationDays, rewardXP },
       });
   
@@ -156,7 +156,7 @@ const deletechallenge = async (req,res) => {
 
     if(!id) return res.status(404).json({message:"Challenge not found"});
 
-    const deleted = await prisma.challenge.delete({
+    const deleted = await prisma.Challenge.delete({
       where: { id: id }
     });
     res.status(200).json({
@@ -177,7 +177,7 @@ const endChallenge = async (req, res) => {
     const challengeId = Number(req.params.id);
 
     // Find active challenge entry
-    const userChallenge = await prisma.userChallenge.findFirst({
+    const userChallenge = await prisma.UserChallenge.findFirst({
       where: {
         userId,
         challengeId,
@@ -190,7 +190,7 @@ const endChallenge = async (req, res) => {
     }
 
     // Delete only userChallenge entry (NOT the entire challenge)
-    await prisma.userChallenge.delete({
+    await prisma.UserChallenge.delete({
       where: { id: userChallenge.id },
     });
 

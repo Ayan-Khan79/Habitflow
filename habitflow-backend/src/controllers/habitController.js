@@ -85,7 +85,7 @@ const getHabits = async (req, res) => {
       }),
       prisma.habit.count({ where }),
     ]);
-
+    
     res.json({ habits, totalCount });
   } catch (err) {
     console.error(err);

@@ -7,9 +7,9 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-//
+
 // ✅ USER MODEL
-//
+
 model User {
   id             Int             @id @default(autoincrement())
   name           String
@@ -17,6 +17,7 @@ model User {
   password       String
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
+  totalXP        Int             @default(0)
 
   habits         Habit[]         @relation("UserHabits")
   userChallenges UserChallenge[]

@@ -19,6 +19,8 @@ model User {
   updatedAt      DateTime        @updatedAt
   totalXP        Int             @default(0)
 
+  
+
   habits         Habit[]         @relation("UserHabits")
   userChallenges UserChallenge[]
 }

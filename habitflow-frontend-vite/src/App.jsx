@@ -57,7 +57,7 @@ export default function App() {
         />
         {/* ✅ View  a Challenge */}
         <Route
-          path="/challenge/:id"
+          path="/challenges/:id"
           element={
             <ProtectedRoute>
               <ChallengeDetail />

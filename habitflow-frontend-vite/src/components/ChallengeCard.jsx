@@ -1,12 +1,28 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axiosInstance from "../api/axiosInstance";
 import { Trash2 } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export default function ChallengeCard({ challenge, refreshChallenges }) {
+
+
+export default function ChallengeCard({ challenge, userChallenges,refreshChallenges }) {
+
+  const startedFromBackend = userChallenges?.some(
+    (uc) => uc.challengeId === challenge.id && uc.status === "ONGOING"
+  );
 
   const [starting, setStarting] = useState(false);
-  const [started, setStarted] = useState(challenge.isStarted || false);
+  const [started, setStarted] = useState(startedFromBackend);
+
+  useEffect(() => {
+    const newStarted = userChallenges?.some(
+      (uc) => uc.challengeId === challenge.id && uc.status === "ONGOING"
+    );
+    setStarted(newStarted);
+  }, [userChallenges, challenge.id]);
+  
+  
+  
 
   if (!challenge) return null;
 
@@ -100,7 +116,7 @@ export default function ChallengeCard({ challenge, refreshChallenges }) {
 
           {/* View Challenge */}
           <Link
-            to={`/challenge/${challenge.id}`}
+            to={`/challenges/${challenge.id}`}
             className="w-full block text-center py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition mb-2"
           >
             View Challenge

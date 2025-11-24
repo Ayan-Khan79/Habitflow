@@ -16,6 +16,7 @@ model User {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   totalXP        Int             @default(0)
+  profilePic     String?         @default("https://i.ibb.co/2k5Y4jF/default-avatar.png")
   habits         Habit[]         @relation("UserHabits")
   userChallenges UserChallenge[]
 }

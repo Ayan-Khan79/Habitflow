@@ -17,6 +17,7 @@ export default function Login() {
       // ⭐ Save token + name
       localStorage.setItem("token", data.token);
       localStorage.setItem("name", data.user.name);
+      localStorage.setItem("profilePic", data.user.profilePic || "");
 
       navigate("/dashboard");
     } catch (err) {

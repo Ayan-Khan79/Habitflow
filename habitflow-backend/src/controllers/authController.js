@@ -63,5 +63,31 @@ const getProfile = async (req, res) => {
   }
 };
 
+const updateProfile = async (req, res) => {
+  try {
+    const { name, avatar } = req.body;
 
-module.exports = { register, login, getProfile };
+    const updated = await prisma.user.update({
+      where: { id: req.user.id },
+      data: {
+        name,
+        avatar
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        avatar: true,
+        totalXP: true,
+        createdAt: true
+      }
+    });
+
+    return res.json(updated);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to update profile" });
+  }
+};
+
+module.exports = { register, login, getProfile, updateProfile };

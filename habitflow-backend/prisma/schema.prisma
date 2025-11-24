@@ -7,10 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-generator migrate {
-  provider = "prisma-migrate"
-}
-
 
 model User {
   id             Int             @id @default(autoincrement())

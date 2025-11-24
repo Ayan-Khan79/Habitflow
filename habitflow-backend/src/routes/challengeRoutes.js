@@ -10,6 +10,7 @@ router.delete('/:id/end', auth, ctrl.endChallenge);
 // User challenges routes (must be BEFORE dynamic :id)
 router.get('/user', auth, ctrl.getUserChallenges);      // <-- Your frontend calls this
 router.get('/user/all', auth, ctrl.getUserChallenges);
+router.get("/user-challenge/:id/history", auth, ctrl.getChallengeHistory);
 
 // Challenge daily complete
 router.post('/user-challenge/:id/complete', auth, ctrl.completeToday);
@@ -20,6 +21,7 @@ router.get('/', auth, ctrl.getAllChallenges);
 
 // Delete challenge
 router.delete('/:id', auth, ctrl.deletechallenge);
+
 
 // ⚠️ ALWAYS KEEP THIS LAST — MATCHES /:id
 router.get('/:id', auth, ctrl.getChallengeById);

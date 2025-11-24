@@ -34,7 +34,7 @@ export default function Dashboard() {
   // Ftech user challenges
   const fetchUserChallenges = async () => {
     try {
-      const { data } = await axiosInstance.get("/challenges/user");
+      const { data } = await axiosInstance.get("/challenges/user/all");
       setUserChallenges(data.userChallenges || []);
     } catch (err) {
       console.log("Failed to load user challenge data");

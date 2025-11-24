@@ -7,9 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-// ✅ USER MODEL
-
 model User {
   id             Int             @id @default(autoincrement())
   name           String
@@ -18,108 +15,84 @@ model User {
   createdAt      DateTime        @default(now())
   updatedAt      DateTime        @updatedAt
   totalXP        Int             @default(0)
-
-  
-
   habits         Habit[]         @relation("UserHabits")
   userChallenges UserChallenge[]
 }
 
-//
-// ✅ FIXED HABIT MODEL (matches EXACT DB)
-//
 model Habit {
   id             Int           @id @default(autoincrement())
   userId         Int
   title          String
   description    String?
-  frequency      String     
-  tags           String[]       @default([])
+  frequency      String
+  tags           String[]      @default([])
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  completedCount Int           @default(0)
+  longestStreak  Int           @default(0)
   reminderTime   DateTime?
-
-  completedCount Int            @default(0)
-  longestStreak  Int            @default(0)
-
-  createdAt      DateTime       @default(now())
-  updatedAt      DateTime       @updatedAt
-
-  user           User           @relation("UserHabits", fields: [userId], references: [id])
+  user           User          @relation("UserHabits", fields: [userId], references: [id])
   trackingLogs   TrackingLog[]
 }
 
-//
-// ✅ FREQUENCY ENUM — MUST MATCH DB ENUM EXACTLY
-//
-enum Frequency {
-  daily
-  weekly
-  monthly
-}
-
-//
-// ✅ TRACKING LOG MODEL
-//
 model TrackingLog {
   id        Int      @id @default(autoincrement())
   habitId   Int
   date      DateTime
   createdAt DateTime @default(now())
-
   habit     Habit    @relation(fields: [habitId], references: [id])
 
   @@unique([habitId, date])
 }
 
-//
-// ✅ CHALLENGE MODELS — these are correct, only formatting cleaned
-//
 model Challenge {
-  id           Int     @id @default(autoincrement())
-  title        String
-  description  String?
-  durationDays Int
-  rewardXP     Int?    @default(0)
-  icon         String?
-
+  id             Int                  @id @default(autoincrement())
+  title          String
+  description    String?
+  durationDays   Int
+  rewardXP       Int?                 @default(0)
+  icon           String?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
   milestones     ChallengeMilestone[]
   userChallenges UserChallenge[]
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 model ChallengeMilestone {
-  id          Int    @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   challengeId Int
   dayCount    Int
   badgeName   String
-
-  challenge Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
 }
 
 model UserChallenge {
-  id            Int             @id @default(autoincrement())
+  id            Int                 @id @default(autoincrement())
   userId        Int
   challengeId   Int
-  startDate     DateTime        @default(now())
+  startDate     DateTime            @default(now())
   endDate       DateTime
-  completedDays Int             @default(0)
-  status        ChallengeStatus @default(ONGOING)
-
-  user         User              @relation(fields: [userId], references: [id], onDelete: Cascade)
-  challenge    Challenge         @relation(fields: [challengeId], references: [id], onDelete: Cascade)
-  progressLogs ChallengeProgress[]
+  completedDays Int                 @default(0)
+  status        ChallengeStatus     @default(ONGOING)
+  progressLogs  ChallengeProgress[]
+  challenge     Challenge           @relation(fields: [challengeId], references: [id], onDelete: Cascade)
+  user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model ChallengeProgress {
-  id              Int      @id @default(autoincrement())
+  id              Int           @id @default(autoincrement())
   userChallengeId Int
   date            DateTime
-  isCompleted     Boolean  @default(false)
-
-  userChallenge UserChallenge @relation(fields: [userChallengeId], references: [id], onDelete: Cascade)
+  isCompleted     Boolean       @default(false)
+  userChallenge   UserChallenge @relation(fields: [userChallengeId], references: [id], onDelete: Cascade)
 
   @@unique([userChallengeId, date])
+}
+
+enum Frequency {
+  daily
+  weekly
+  monthly
 }
 
 enum ChallengeStatus {

@@ -48,6 +48,9 @@ Dynamic components and smooth transitions
 ### 🧩 Habit Details
 ![Habit Detail](./Screenshot/habit.png)
 
+### 🧩 Analytics Page
+![Analytics](./Screenshot/Analytics.png)
+
 
 ## 🏗️ Tech Stack
 Layer	Technology <br>
@@ -96,8 +99,6 @@ PUT	/api/habits/:id	Update habit details	<br>
 DELETE	/api/habits/:id	Delete a habit	 <br>
 
 ## 🧠 Future Enhancements
-
--- 📈 Analytics Dashboard (weekly/monthly progress) <br>
 
 -- 🔔 Daily Reminders / Notifications <br>
 

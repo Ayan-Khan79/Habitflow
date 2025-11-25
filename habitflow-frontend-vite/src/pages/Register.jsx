@@ -10,10 +10,15 @@ export default function Register() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
-      await axiosInstance.post("/auth/register", form);
-      alert("Registration successful! Please login.");
-      navigate("/login");
+      const { data } = await axiosInstance.post("/auth/register", form);
+
+      // ⭐ Auto-login after registration
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("name", data.user.name);
+
+      navigate("/dashboard");
     } catch (err) {
       alert(err.response?.data?.message || "Registration failed");
     } finally {
@@ -23,7 +28,7 @@ export default function Register() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-indigo-100 to-indigo-300">
-      {/* Left Illustration */}
+      {/* Illustration */}
       <div className="hidden md:flex w-1/2 items-center justify-center">
         <img
           src="/images/habitquotes-removebg-preview.png"
@@ -41,16 +46,13 @@ export default function Register() {
           <h2 className="text-3xl font-bold text-indigo-600 text-center mb-2">
             Create Account
           </h2>
-          <p className="text-gray-500 text-center mb-4">
-            Start tracking your habits today
-          </p>
 
           <input
             type="text"
             placeholder="Full Name"
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+            className="w-full p-3 border rounded-xl focus:ring-indigo-400"
           />
 
           <input
@@ -58,7 +60,7 @@ export default function Register() {
             placeholder="Email"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+            className="w-full p-3 border rounded-xl focus:ring-indigo-400"
           />
 
           <input
@@ -66,16 +68,14 @@ export default function Register() {
             placeholder="Password"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
-            className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+            className="w-full p-3 border rounded-xl focus:ring-indigo-400"
           />
 
           <button
             type="submit"
             disabled={loading}
-            className={`w-full p-3 rounded-xl text-white font-semibold transition ${
-              loading
-                ? "bg-indigo-400 cursor-not-allowed"
-                : "bg-indigo-600 hover:bg-indigo-700"
+            className={`w-full p-3 rounded-xl text-white ${
+              loading ? "bg-indigo-400" : "bg-indigo-600 hover:bg-indigo-700"
             }`}
           >
             {loading ? "Creating Account..." : "Register"}

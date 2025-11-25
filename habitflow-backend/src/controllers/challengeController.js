@@ -88,49 +88,79 @@ const getUserChallenges = async (req, res) => {
 const completeToday = async (req, res) => {
   try {
     const userChallengeId = Number(req.params.id);
+
     const uc = await prisma.UserChallenge.findUnique({
       where: { id: userChallengeId },
-      include: { challenge: { include: { milestones: true } } }
+      include: { 
+        challenge: { include: { milestones: true } } 
+      }
     });
-    if (!uc || uc.userId !== req.user.id) return res.status(404).json({ message: 'Not found' });
 
-    const today = dayjs().startOf('day').toDate();
+    if (!uc || uc.userId !== req.user.id) {
+      return res.status(404).json({ message: "Not found" });
+    }
 
-    // prevent duplicate
+    const today = dayjs().startOf("day").toDate();
+
+    // 🚫 Prevent duplicate progress entry
     const exists = await prisma.ChallengeProgress.findUnique({
       where: { userChallengeId_date: { userChallengeId, date: today } }
     });
-    if (exists) return res.status(400).json({ message: 'Already completed for today' });
+    if (exists) {
+      return res.status(400).json({ message: "Already completed today" });
+    }
 
+    // ✅ Create today's progress entry
     await prisma.ChallengeProgress.create({
       data: { userChallengeId, date: today, isCompleted: true }
     });
 
+    // ➕ Increase completed days count
     const updated = await prisma.UserChallenge.update({
       where: { id: userChallengeId },
       data: { completedDays: { increment: 1 } },
       include: { challenge: { include: { milestones: true } } }
     });
 
-    // Check milestone unlocks
-    const unlocked = updated.challenge.milestones.filter(m => m.dayCount === updated.completedDays);
+    // ⭐ Check milestone unlocks
+    const unlocked = updated.challenge.milestones.filter(
+      m => m.dayCount === updated.completedDays
+    );
 
-    // If completedDays reaches duration -> mark as completed
     let statusUpdate = null;
+
+    // 🎯 Completed entire challenge
     if (updated.completedDays >= updated.challenge.durationDays) {
+      // Mark challenge as COMPLETED
       await prisma.UserChallenge.update({
         where: { id: userChallengeId },
-        data: { status: 'COMPLETED' }
+        data: { status: "COMPLETED" }
       });
-      statusUpdate = 'COMPLETED';
+
+      // ⭐ Award XP to the user
+      await prisma.User.update({
+        where: { id: uc.userId },
+        data: { totalXP: { increment: updated.challenge.rewardXP || 0 } }
+      });
+
+      statusUpdate = "COMPLETED";
     }
 
-    return res.json({ message: 'Progress marked', completedDays: updated.completedDays, unlockedMilestones: unlocked, status: statusUpdate });
+    return res.json({
+      message: "Progress marked",
+      completedDays: updated.completedDays,
+      unlockedMilestones: unlocked,
+      status: statusUpdate
+    });
+
   } catch (err) {
     console.error(err);
-    return res.status(500).json({ message: 'Failed to mark progress' });
+    return res.status(500).json({
+      message: "Failed to mark progress"
+    });
   }
 };
+
 const createChallenge = async (req, res) => {
     try {
       const { title, description, icon, durationDays, rewardXP } = req.body;
@@ -201,6 +231,39 @@ const endChallenge = async (req, res) => {
   }
 };
 
+const getChallengeHistory = async (req, res) => {
+  try {
+    const userChallengeId = Number(req.params.id);
+
+    const userChallenge = await prisma.UserChallenge.findUnique({
+      where: { id: userChallengeId },
+      include: { progressLogs: true }
+    });
+
+    if (!userChallenge || userChallenge.userId !== req.user.id) {
+      return res.status(404).json({ message: "Not found" });
+    }
+
+    // Sort last 7 days
+    const last7 = [...userChallenge.progressLogs]
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .slice(0, 7)
+      .reverse();
+
+    res.json({
+      history: last7.map((l) => ({
+        date: l.date,
+        isCompleted: l.isCompleted
+      }))
+    });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to load challenge history" });
+  }
+};
+
+
 module.exports = { 
     getAllChallenges,
     getChallengeById,
@@ -209,6 +272,7 @@ module.exports = {
     completeToday,
     createChallenge, 
     deletechallenge,
-    endChallenge
+    endChallenge,
+    getChallengeHistory
 };
   

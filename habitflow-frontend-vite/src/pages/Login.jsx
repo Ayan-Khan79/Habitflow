@@ -10,9 +10,15 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
     try {
       const { data } = await axiosInstance.post("/auth/login", form);
+
+      // ⭐ Save token + name
       localStorage.setItem("token", data.token);
+      localStorage.setItem("name", data.user.name);
+      localStorage.setItem("profilePic", data.user.profilePic || "");
+
       navigate("/dashboard");
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
@@ -21,7 +27,7 @@ export default function Login() {
     }
   };
 
-  // ✅ Demo credentials (for interviewer)
+  // Demo credentials
   const demoEmail = "demo@habitflow.com";
   const demoPassword = "Demo@123";
 
@@ -31,11 +37,11 @@ export default function Login() {
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-indigo-100 to-indigo-300">
-      {/* Left Image / Illustration */}
+      {/* Left Image */}
       <div className="hidden md:flex w-1/2 items-center justify-center">
         <img
           src="/images/habitquotes-removebg-preview.png"
-          alt="Motivational Habit"
+          alt="Motivation"
           className="rounded-xl shadow-lg"
         />
       </div>
@@ -49,16 +55,13 @@ export default function Login() {
           <h2 className="text-3xl font-bold text-indigo-600 text-center mb-2">
             Welcome Back
           </h2>
-          <p className="text-gray-500 text-center mb-4">
-            Log in to continue tracking your habits
-          </p>
 
           <input
             type="email"
             placeholder="Email"
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
-            className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+            className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
           />
 
           <input
@@ -66,13 +69,13 @@ export default function Login() {
             placeholder="Password"
             value={form.password}
             onChange={(e) => setForm({ ...form, password: e.target.value })}
-            className="w-full p-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-400 transition"
+            className="w-full p-3 border rounded-xl focus:ring-2 focus:ring-indigo-400"
           />
 
           <button
             type="submit"
             disabled={loading}
-            className={`w-full p-3 rounded-xl text-white font-semibold transition ${
+            className={`w-full p-3 rounded-xl text-white font-semibold ${
               loading
                 ? "bg-indigo-400 cursor-not-allowed"
                 : "bg-indigo-600 hover:bg-indigo-700"
@@ -81,21 +84,19 @@ export default function Login() {
             {loading ? "Logging in..." : "Login"}
           </button>
 
-          {/* ✅ Demo credentials section */}
-          <div className="mt-4 p-4 bg-indigo-50 rounded-xl border border-indigo-200 text-sm text-gray-700">
+          {/* Demo Credentials */}
+          <div className="mt-4 p-4 bg-indigo-50 rounded-xl border border-indigo-200 text-sm">
             <p className="font-semibold text-indigo-700 text-center mb-2">
-              Demo Login Credentials
+              Demo Login
             </p>
-            <p>
-              <strong>Email:</strong> {demoEmail}
-            </p>
-            <p>
-              <strong>Password:</strong> {demoPassword}
-            </p>
+
+            <p><strong>Email:</strong> {demoEmail}</p>
+            <p><strong>Password:</strong> {demoPassword}</p>
+
             <button
               type="button"
               onClick={fillDemoCredentials}
-              className="mt-3 w-full py-2 text-sm rounded-lg border border-indigo-600 text-indigo-600 hover:bg-indigo-100 transition"
+              className="mt-3 w-full py-2 rounded-lg border border-indigo-600 text-indigo-600 hover:bg-indigo-100"
             >
               Autofill Demo Credentials
             </button>

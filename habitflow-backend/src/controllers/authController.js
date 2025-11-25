@@ -43,4 +43,51 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+const getProfile = async (req, res) => {
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: req.user.id },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        totalXP: true,
+      }
+    });
+
+    res.json(user);
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to fetch profile" });
+  }
+};
+
+const updateProfile = async (req, res) => {
+  try {
+    const { name, avatar } = req.body;
+
+    const updated = await prisma.user.update({
+      where: { id: req.user.id },
+      data: {
+        name,
+        avatar
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        avatar: true,
+        totalXP: true,
+        createdAt: true
+      }
+    });
+
+    return res.json(updated);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to update profile" });
+  }
+};
+
+module.exports = { register, login, getProfile, updateProfile };

@@ -11,6 +11,7 @@ export default function Dashboard() {
   const [challenges, setChallenges] = useState([]);
   const [loadingHabits, setLoadingHabits] = useState(true);
   const [loadingChallenges, setLoadingChallenges] = useState(true);
+  const [userChallenges, setUserChallenges] = useState([]);
 
   const [tagFilter, setTagFilter] = useState("");
   const [page, setPage] = useState(1);
@@ -28,6 +29,15 @@ export default function Dashboard() {
       alert("Failed to load challenges");
     } finally {
       setLoadingChallenges(false);
+    }
+  };
+  // Ftech user challenges
+  const fetchUserChallenges = async () => {
+    try {
+      const { data } = await axiosInstance.get("/challenges/user/all");
+      setUserChallenges(data.userChallenges || []);
+    } catch (err) {
+      console.log("Failed to load user challenge data");
     }
   };
 
@@ -50,6 +60,7 @@ export default function Dashboard() {
   useEffect(() => {
     fetchChallenges();
     fetchHabits(tagFilter, page);
+    fetchUserChallenges();
   }, [tagFilter, page]);
 
   return (
@@ -90,6 +101,7 @@ export default function Dashboard() {
               <ChallengeCard
                 key={c.id}
                 challenge={c}
+                userChallenges={userChallenges}
                 refreshChallenges={fetchChallenges}
               />
             ))}

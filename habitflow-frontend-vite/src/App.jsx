@@ -7,67 +7,87 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import NewChallengePage from "./pages/NewChallengePage";
 import NewHabitPage from "./pages/NewHabitPage";
 import ChallengeDetail from "./pages/ChallengeDetail";
+import { XpProvider } from "./context/XpContext";
+import AnalyticsDashboard from "./pages/AnalyticsDashboard";
+import Profile from "./pages/Profile";
 
 export default function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Public routes */}
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<Login />} />
+    <XpProvider>
+      <Router>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
 
-        {/* Protected routes */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
-          }
-        />
+          {/* Protected routes */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* View Habit Detail */}
-        <Route
-          path="/habit/:id"
-          element={
-            <ProtectedRoute>
-              <HabitDetail />
-            </ProtectedRoute>
-          }
-        />
+          {/* View Habit Detail */}
+          <Route
+            path="/habit/:id"
+            element={
+              <ProtectedRoute>
+                <HabitDetail />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* ✅ Create New Habit */}
-        <Route
-          path="/new-habit"
-          element={
-            <ProtectedRoute>
-              <NewHabitPage />
-            </ProtectedRoute>
-          }
-        />
+          {/* ✅ Create New Habit */}
+          <Route
+            path="/new-habit"
+            element={
+              <ProtectedRoute>
+                <NewHabitPage />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* ✅ Create New Challenge */}
-        <Route
-          path="/new-challenge"
-          element={
-            <ProtectedRoute>
-              <NewChallengePage />
-            </ProtectedRoute>
-          }
-        />
-        {/* ✅ View  a Challenge */}
-        <Route
-          path="/challenge/:id"
-          element={
-            <ProtectedRoute>
-              <ChallengeDetail />
-            </ProtectedRoute>
-          }
-        />
+          {/* ✅ Create New Challenge */}
+          <Route
+            path="/new-challenge"
+            element={
+              <ProtectedRoute>
+                <NewChallengePage />
+              </ProtectedRoute>
+            }
+          />
+          {/* ✅ View  a Challenge */}
+          <Route
+            path="/challenges/:id"
+            element={
+              <ProtectedRoute>
+                <ChallengeDetail />
+              </ProtectedRoute>
+            }
+          />
 
-        {/* Default redirect */}
-        <Route path="*" element={<Login />} />
-      </Routes>
-    </Router>
+          <Route
+            path="/analytics"
+            element={<ProtectedRoute><AnalyticsDashboard /></ProtectedRoute>}
+          />
+
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+
+
+          {/* Default redirect */}
+          <Route path="*" element={<Login />} />
+        </Routes>
+      </Router>
+    </XpProvider>
   );
 }

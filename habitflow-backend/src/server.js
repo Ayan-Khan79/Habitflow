@@ -22,6 +22,7 @@ app.use(
         callback(new Error("Not allowed by CORS"));
       }
     },
+    methods: "GET,POST,PUT,DELETE",
     credentials: true,
   })
 );
@@ -30,10 +31,12 @@ app.use(
 const authRoutes = require('./routes/authRoutes');
 const habitRoutes = require('./routes/habitRoutes');
 const challengeRoutes = require("./routes/challengeRoutes");
+const analyticsRoutes = require('./routes/analyticsRoutes');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/habits', habitRoutes);
 app.use("/api/challenges", challengeRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 app.get('/', (req, res) => res.send('HabitFlow API is running'));
 
